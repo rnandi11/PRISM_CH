@@ -27,9 +27,24 @@ print("features used in model training:", loaded_features)
 # Load the validation set, input the actual file path
 df_validation=pd.read_csv("path/to/data.csv")
 
+# ---------------Create a column for presence of giant platelets-----------
+if 'giant_plt' not in df_validation.columns:
+    if 'PDW' in df_validation.columns:
+        df_validation['giant_plt'] = np.where(df_validation['PDW'] > 16.8, 1, 0)
+    else:
+        raise ValueError(
+            "Neither 'giant_plt' nor 'PDW' found in the validation dataset. "
+            "Cannot construct the 'giant_plt' feature."
+        )
+
+# -----------------Check all required features are present-------------
+missing_features = [f for f in loaded_features if f not in df_validation.columns]
+if missing_features:
+    raise ValueError(f"Missing required features in validation data: {missing_features}")
+
 columns_to_keep=loaded_features
 X_test=df_validation[columns_to_keep]
-y_test=df_validation[['CH']]
+y_test=df_validation['CH']
 
 #-------------------------------------------------------------------------------------------------------------------
 # ROC-AUC plot, AUC and threshold determination
