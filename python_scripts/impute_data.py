@@ -49,7 +49,7 @@ def main():
 	df_imputed= impute(df_unscreened,columns_to_impute)
 	df_imputed['giant_plt'] = np.where(df_imputed['giant_plt'] >= 0.5, 1, 0)
 
-	df_imputed.to_csv('df_unscreened_imputed.csv')
+	df_imputed.to_csv('df_imputed.csv')
 	
 
 if __name__ == "__main__":
