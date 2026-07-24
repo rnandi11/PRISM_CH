@@ -33,11 +33,11 @@ python3 baseline_model.py
 - `baseline_confusion_matrix_standard.png`, `baseline_confusion_matrix_custom_threshold.png`
 - `baseline_roc_auc.png`
 - `shap_summary_class0.png`, `shap_summary_class1.png`, `shap_summary_class2.png`
-- `models/baseline_model.pkl` — model, features, thresholds
+- `models/baseline_custom_threshold.pkl` — model, features, thresholds
 
 ### 3. Retrain final model with OOF thresholds
 ```bash
-python3 train_pipeline.py
+python3 final_model.py
 ```
 - Loads baseline model hyperparameters from `models/baseline_model.pkl`
 - Generates out-of-fold probabilities via 5-fold CV on the full training set
@@ -52,7 +52,7 @@ python3 train_pipeline.py
 
 ### 4. Validate on an external/holdout dataset
 ```bash
-python3 validate_model.py
+python3 performance_evaluation.py
 ```
 - Loads `models/final_model.pkl`
 - Applies the same feature construction (`giant_plt` from `PDW` if needed) and threshold-based prediction logic
