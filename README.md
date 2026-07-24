@@ -19,7 +19,7 @@ The dataset must contain the following columns (or `PDW`, from which `giant_plt`
 
 ### 2. Train the baseline model
 ```bash
-python3 model_concise.py
+python3 baseline_model.py
 ```
 - Trains a `BalancedRandomForestClassifier` with `RandomizedSearchCV`
 - Runs Boruta feature selection and retrains on selected features
