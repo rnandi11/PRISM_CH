@@ -6,18 +6,31 @@ This study used routine blood counts and demographic data from UK Biobank to tra
 
 1. `baseline_model.py` - This python script can be independently run to generate the baseline model from the preprocessed dataset.
 2. `final_model.py` - This python script can be run to generate the final model from the baseline model (after threshold selection, and refitting on final feature set) on which performance is tested.
-3. `impute_data.py` - Script for implementing KNN imputation for missing data.
+3. `impute_data.py` - Script for implementing KNN imputation for missing data. This code uses K=5, so each feature must have at least 5 non-missing samples for imputation to run successfully.
 4. `performance_evaluation.py` - This script generates figures and files of model performance metrics and CHRS benchmarking, and can be used on external validation sets.
 
 ## Pipeline Usage
 
 Run the following scripts in order. Each stage produces outputs required by the next.
 
-### 1. Prepare input data
-Place `xxx.csv` in the project root (or update the path inside the script).
+### 1. (Optional) Impute missing blood count data
+```bash
+python3 impute_data.py
+```
+- Imputes missing values in the raw blood count data (via KNN (K=5) imputation)
+- Produces the cleaned/imputed dataset used by all downstream steps
+
+**Before running:** update the input/output file paths at the top of the script.
+
+**Output:**
+- `df_imputed.csv` — imputed dataset used as input to Step 2
+
+
+### 2. Prepare input data
+Place `xxx.csv` (either imputed or original dataset) in the project root (or update the path inside the script).
 The dataset must contain the following columns (or `PDW`, from which `giant_plt` will be derived):
 
-### 2. Train the baseline model
+### 3. Train the baseline model
 ```bash
 python3 baseline_model.py
 ```
@@ -35,7 +48,7 @@ python3 baseline_model.py
 - `shap_summary_class0.png`, `shap_summary_class1.png`, `shap_summary_class2.png`
 - `models/baseline_custom_threshold.pkl` — model, features, thresholds
 
-### 3. Retrain final model with OOF thresholds
+### 4. Retrain final model with OOF thresholds
 ```bash
 python3 final_model.py
 ```
@@ -50,7 +63,7 @@ python3 final_model.py
 **Outputs:**
 - `models/final_model.pkl` — final model, OOF thresholds, feature list, class labels
 
-### 4. Validate on an external/holdout dataset
+### 5. Produces performance metrics on test data, model prediction statistics and benchmarks performance against CHRS
 ```bash
 python3 performance_evaluation.py
 ```
