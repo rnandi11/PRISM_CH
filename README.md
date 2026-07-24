@@ -1,4 +1,4 @@
-<h2>PRISM - A machine learning model using routine blood counts to prioritize sequencing for high-risk clonal hematopoiesis</h2>
+<h2>PRISM - A machine learning model using routine blood count data to prioritize sequencing for high-risk clonal hematopoiesis</h2>
 This study used routine blood counts and demographic data from UK Biobank to train a Balanced Random Forest model to predict high-risk Clonal Hematopoiesis. 
 
 
