@@ -7,7 +7,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.model_selection import RandomizedSearchCV
 from sklearn.metrics import (accuracy_score, classification_report, 
                              confusion_matrix, ConfusionMatrixDisplay, 
-                             roc_auc_score, make_scorer, roc_curve, auc)
+                             roc_auc_score, make_scorer, roc_curve, auc,recall_score)
 from sklearn.preprocessing import label_binarize
 from imblearn.ensemble import BalancedRandomForestClassifier
 from boruta import BorutaPy
@@ -18,6 +18,12 @@ import pickle
 
 
 seed=345
+
+# List of all 20 CBCs, age and sex on which baseline model was derived.
+FEATURES = ['sex', 'RBC', 'Hbconc', 'MCV', 'MCHb', 'MCHbconc', 'RDW', 'platelet',
+            'plateletcrit', 'MPV', 'lymphocyte', 'monocyte', 'neutrophil',
+            'eosinophil', 'basophil', 'nucRBC', 'reticulocyte', 'MRV', 'MspCV',
+            'immret', 'age', 'giant_plt']
 
 def split_data(data,seed=seed):
     X=data.drop('CH',axis=1)
@@ -76,6 +82,14 @@ def run_boruta(model, X_train, y_train, seed=seed):
     feature_ranks = list(zip(X_train.columns, boruta_selector.ranking_))
     feature_ranks.sort(key=lambda x: x[1])
 
+    with open("boruta_results.txt", "w") as f:
+        f.write("Selected Features by Boruta:\n")
+        f.write(f"{selected_features}\n")
+        f.write("\nFeature Rankings:\n")
+        for feature, rank in feature_ranks:
+            f.write(f"{feature}: Rank {rank}\n")
+
+
     return selected_features, feature_ranks
 
 
@@ -97,6 +111,7 @@ def evaluate_model(model, X_test, y_test, thresholds=None, output_file=None):
     # Plot confusion matrix
     ConfusionMatrixDisplay(confusion_matrix=cm).plot(cmap='Blues')
     plt.title("Standard Confusion Matrix")
+    plt.savefig(f"baseline_confusion_matrix_standard.png", dpi=300, bbox_inches='tight')
     plt.show()
 
     # ROC and threshold optimization
@@ -125,6 +140,7 @@ def evaluate_model(model, X_test, y_test, thresholds=None, output_file=None):
     plt.xlabel("FPR")
     plt.ylabel("TPR")
     plt.grid(True)
+    plt.savefig(f"baseline_roc_auc.png", dpi=300, bbox_inches='tight')
     plt.show()
 
     # Threshold-based prediction
@@ -150,19 +166,23 @@ def evaluate_model(model, X_test, y_test, thresholds=None, output_file=None):
 
     ConfusionMatrixDisplay(confusion_matrix=cm_custom).plot(cmap='Blues')
     plt.title("Custom Threshold Confusion Matrix")
+    plt.savefig(f"baseline_confusion_matrix_custom_threshold.png", dpi=300, bbox_inches='tight')
     plt.show()
 
     return thresholds
 
 
-def run_shap(model, X_test, y_test):
+def run_shap(model, X_test, y_test,output_prefix="shap_summary"):
     """Compute and display SHAP feature importance for a given class"""
     y_test_bin = label_binarize(y_test, classes=np.unique(y_test))
     n_classes = y_test_bin.shape[1]
     explainer = shap.Explainer(model.predict_proba, X_test, check_additivity=False)
     shap_values = explainer(X_test)
     for i in range(n_classes):
-        shap.summary_plot(shap_values[:, :, i], X_test, show=True, title=f"Class {i}")
+        shap.summary_plot(shap_values[:, :, i], X_test, show=False)
+        plt.title(f"SHAP Summary - Class {i}")
+        plt.savefig(f"{output_prefix}_class{i}.png", dpi=300, bbox_inches='tight')
+        plt.show()
 
 
 
@@ -172,37 +192,38 @@ def run_pipeline(data, seed=seed, output_path="model_results.txt"):
     # Step 1: Split into training and test set
     X_train,X_test,y_train,y_test=split_data(data)
 
-    # Step 1: Train initial model
+    # Step 2: Train initial model
     print("Training initial Balanced Random Forest...")
     best_model, best_params = train_balanced_rf(X_train, y_train, seed=seed)
     print("Best initial parameters:", best_params)
 
-    # Step 2: Feature Selection
+    # Step 3: Feature Selection
     print("Running Boruta feature selection...")
     selected_features, ranks = run_boruta(best_model, X_train, y_train, seed=seed)
     print("Selected Features:", selected_features)
 
-    # Step 3: Filter dataset
+    # Step 4: Filter dataset
     X_train_sel = X_train[selected_features]
     X_test_sel = X_test[selected_features]
 
-    # Step 4: Retrain with selected features
+    # Step 5: Retrain with selected features
     print("Retraining with selected features...")
     best_model_boruta, best_params_boruta = train_balanced_rf(X_train_sel, y_train, seed=seed)
     print("Best Boruta-tuned parameters:", best_params_boruta)
 
-    # Step 5: Evaluate final model
+    # Step 6: Evaluate final model
     thresholds = evaluate_model(best_model_boruta, X_test_sel, y_test, output_file=output_path)
 
-    # Step 6: SHAP analysis
+    # Step 7: SHAP analysis
     print("Running SHAP analysis...")
-    run_shap(best_model_boruta, X_train_sel, X_test_sel)
+    run_shap(best_model_boruta, X_test_sel, y_test)
 
 
-    # Step 7: Save model
+    # Step 8: Save model
     model_package = {
         'model': best_model_boruta,
-        'features': selected_features  
+        'features': selected_features,
+        'thresholds': thresholds
     }
 
     with open("baseline_model.pkl", "wb") as f:
@@ -217,11 +238,22 @@ def run_pipeline(data, seed=seed, output_path="model_results.txt"):
 def main():
 
     # -------------------------import data-------------------------------- 
-    df=pd.read_csv('UKBB_preprocessed.csv')
+    df=pd.read_csv('path/to/file.csv')
 
     # ---------------Create a column for presence of giant platelets-----------
-    df['giant_plt']=np.where(df['PDW']>16.8,1,0)
+    if 'giant_plt' not in df.columns:
+        if 'PDW' in df.columns:
+            df['giant_plt'] = np.where(df['PDW'] > 16.8, 1, 0)
+        else:
+            raise ValueError(
+                "Neither 'giant_plt' nor 'PDW' found in the dataset. "
+                "Cannot construct the 'giant_plt' feature."
+            )
 
+  # -----------------Check all required features are present-------------
+    missing_features = [f for f in FEATURES if f not in df.columns]
+    if missing_features:
+        raise ValueError(f"Missing required features in dataset: {missing_features}")
 
     # -----------------Create a classification label----------------------
     df_ar=df.to_numpy()
@@ -243,8 +275,12 @@ def main():
 
     print("Number of participants in each class:",df['CH'].value_counts())
 
-    # Run the pipeline
-    run_pipeline(df)
+    # Run the pipeline keeping only the selected features + target
+    df_model = df[FEATURES + ['CH']]
+    run_pipeline(df_model)
+  
+if __name__ == "__main__":
+    main()
 
 
 
