@@ -254,7 +254,8 @@ def main():
 	for prob_vector in y_proba:
 		passing = np.where(prob_vector >= thresholds_array)[0]
 		if passing.size > 0:
-			chosen = passing[np.argmax(prob_vector[passing])]
+			margins = prob_vector[passing] - thresholds_array[passing]
+        	chosen = passing[np.argmax(margins)]
 		else:
 			chosen = np.argmax(prob_vector)
 		y_pred_custom.append(classes_sorted[chosen])
