@@ -6,8 +6,9 @@ This study used routine blood counts and demographic data from UK Biobank to tra
 
 1. `baseline_model.py` - This python script can be independently run to generate the baseline model from the preprocessed dataset.
 2. `final_model.py` - This python script can be run to generate the final model from the baseline model (after threshold selection, and refitting on final feature set) on which performance is tested.
-3. `impute_data.py` - Script for implementing KNN imputation for missing data. This code uses K=5, so each feature must have at least 5 non-missing samples for imputation to run successfully.
-4. `performance_evaluation.py` - This script generates figures and files of model performance metrics and CHRS benchmarking, and can be used on external validation sets.
+3. `PRISM_predict_evaluate.py` - This script generates PRISM predictions on an input dataset, creating a new output file with predicted probabilities of PRISM output classes and predicted class labels. If ground truth labels exist in the input data, then model performance is evaluated against those labels. Figures and files of model performance metrics and files with CHRS benchmarking is generated.
+4. `prism_imputation.py` - This script implements KNN imputation for handling missing data using five nearest neighbors (k=5). KNN imputation may not be appropriate for features with a high proportion of missing values, as there may be insufficient information to produce reliable estimates. Place this file in the same directory as 'PRISM_predict_evaluate_w_imputation.py', which imports and calls the 'impute_missing_features' function.
+5. `PRISM_predict_evaluate_w_imputation.py` - This script provides the same functionality as `PRISM_predict_evaluate.py` with additional support for handling missing data through imputation.
 
 ## Pipeline Usage
 
@@ -63,17 +64,24 @@ python3 final_model.py
 **Outputs:**
 - `models/final_model.pkl` — final model, OOF thresholds, feature list, class labels
 
-### 5. Produces performance metrics on test data, model prediction statistics and benchmarks performance against CHRS
+### 5. Generates PRISM predictions and evaluates model performance
+Choose the appropriate workflow based on whether your dataset contains missing values. 
+**Without missing-data imputation:**
 ```bash
-python3 performance_evaluation.py
+python3 PRISM_predict_evaluate.py
 ```
-- Loads `models/final_model.pkl`
+**With missing-data imputation:**
+```bash
+python3 PRISM_predict_evaluate_w_imputation.py
+```
+- Both scripts generate PRISM predictions and evaluate model performance on the test data.
 - Applies the same feature construction (`giant_plt` from `PDW` if needed) and threshold-based prediction logic
-- Evaluates performance and computes CHRS/MN-based risk stratification statistics
+- PRISM_predict_evaluate_w_imputation.py handles missing feature values using the impute_missing_features function from prism_imputation.py.
 
 **Before running:** update the model path (`path/to/model.pkl`) and validation data path (`path/to/data.csv`) at the top of the script.
 
 **Outputs:**
+- `prism_prediction.csv'
 - `roc_auc.png`
 - `confusion_matrix.png`
 - `classification_report.txt`
