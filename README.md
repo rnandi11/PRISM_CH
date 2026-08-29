@@ -9,7 +9,7 @@ This study used routine blood counts and demographic data from UK Biobank to tra
 <h3> Python Scipts </h3>
 
 1. `baseline_model.py` - This python script can be independently run to generate the baseline model from the preprocessed dataset.
-2. `final_model.py` - This python script can be run to generate the final model from the baseline model (after threshold selection, and refitting on final feature set) on which performance is tested.
+2. `final_model.py` - This python script can be run to generate the final model `PRISM.pkl` from the baseline model (after threshold selection, and refitting on final feature set) on which performance is tested.
 3. `PRISM_predict_evaluate.py` - This script generates PRISM predictions on an input dataset, creating a new output file with predicted probabilities of PRISM output classes and predicted class labels. If ground truth labels exist in the input data, then model performance is evaluated against those labels. Figures and files of model performance metrics and files with CHRS benchmarking is generated.
 4. `prism_imputation.py` - This script implements KNN imputation for handling missing data using five nearest neighbors (k=5). KNN imputation may not be appropriate for features with a high proportion of missing values, as there may be insufficient information to produce reliable estimates. Place this file in the same directory as 'PRISM_predict_evaluate_w_imputation.py', which imports and calls the 'impute_missing_features' function.
 5. `PRISM_predict_evaluate_w_imputation.py` - This script provides the same functionality as `PRISM_predict_evaluate.py` with additional support for handling missing data through imputation.
