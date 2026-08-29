@@ -65,7 +65,8 @@ python3 final_model.py
 - `models/final_model.pkl` — final model, OOF thresholds, feature list, class labels
 
 ### 5. Generates PRISM predictions and evaluates model performance
-Choose the appropriate workflow based on whether your dataset contains missing values. 
+Choose the appropriate workflow based on whether your dataset contains missing values.  
+
 **Without missing-data imputation:**
 ```bash
 python3 PRISM_predict_evaluate.py
@@ -81,7 +82,7 @@ python3 PRISM_predict_evaluate_w_imputation.py
 **Before running:** update the model path (`path/to/model.pkl`) and validation data path (`path/to/data.csv`) at the top of the script.
 
 **Outputs:**
-- `prism_prediction.csv'
+- `prism_prediction.csv`
 - `roc_auc.png`
 - `confusion_matrix.png`
 - `classification_report.txt`
