@@ -17,7 +17,7 @@ from sklearn.preprocessing import label_binarize
 
 
 # ======================== USER SETTINGS ========================
-MODEL_PATH = "model.pkl"
+MODEL_PATH = "PRSIM.pkl"
 DATA_PATH = "path/to/input_file.csv"
 OUTPUT_PATH = "path/to/output_prism_predictions.csv"
 
