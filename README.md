@@ -22,7 +22,7 @@ Run the following scripts in order. Each stage produces outputs required by the 
 Place `xxx.csv` (original preprocessed dataset) in the project root (or update the path inside the script).
 The dataset must contain the following columns (or `PDW`, from which `giant_plt` will be derived):
 
-### 3. Train the baseline model
+### 2. Train the baseline model
 ```bash
 python3 baseline_model.py
 ```
@@ -40,7 +40,7 @@ python3 baseline_model.py
 - `shap_summary_class0.png`, `shap_summary_class1.png`, `shap_summary_class2.png`
 - `models/baseline_custom_threshold.pkl` — model, features, thresholds
 
-### 4. Retrain final model with OOF thresholds
+### 3. Retrain final model with OOF thresholds
 ```bash
 python3 final_model.py
 ```
