@@ -81,5 +81,6 @@ python3 PRISM_predict_evaluate_w_imputation.py
 - `chrs_statistics.txt`
 
 ### Notes
+- Although the fianl_model.pkl was trained on data without missing values, it can accept missing values during prediction. When a feature value is missing, the sample is routed to the child node containing the greater number of training samples. 
 - Random seed fixed at `345` throughout for reproducibility.
 - Scripts expect a `models/` directory for saved `.pkl` files — create it if it doesn't exist, or let `save_model()` create it automatically.
