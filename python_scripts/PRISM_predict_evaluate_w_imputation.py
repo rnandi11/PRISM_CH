@@ -18,7 +18,7 @@ from prism_imputation import impute_missing_features
 
 
 # ======================== USER SETTINGS ========================
-MODEL_PATH = "model.pkl"
+MODEL_PATH = "PRISM.pkl"
 DATA_PATH = "path/to/input_file.csv"
 OUTPUT_PATH = "path/to/output_prism_predictions.csv"
 
