@@ -39,6 +39,7 @@ python3 baseline_model.py
 - `baseline_roc_auc.png`
 - `shap_summary_class0.png`, `shap_summary_class1.png`, `shap_summary_class2.png`
 - `models/baseline_custom_threshold.pkl` — model, features, thresholds
+- `models/baseline_model.pkl` — model
 
 ### 3. Retrain final model with OOF thresholds
 ```bash
@@ -55,7 +56,7 @@ python3 final_model.py
 **Outputs:**
 - `models/final_model.pkl` — final model, OOF thresholds, feature list, class labels
 
-### 5. Generates PRISM predictions and evaluates model performance
+### 4. Generates PRISM predictions and evaluates model performance
 Choose the appropriate workflow based on whether your dataset contains missing values.  
 
 **Without missing-data imputation:**
