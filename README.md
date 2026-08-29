@@ -1,9 +1,9 @@
 <h2>PRISM - A machine learning model using routine blood count data to prioritize sequencing for high-risk clonal hematopoiesis</h2>
-This study used routine blood counts and demographic data from UK Biobank to train a Balanced Random Forest model to predict high-risk Clonal Hematopoiesis. It takes participant's age and routine blood counts as input features and classifies them in one of the three groups:
+This study used routine blood counts and demographic data from UK Biobank to train a Balanced Random Forest model to predict high-risk Clonal Hematopoiesis. It takes participant's age and routine blood counts as input features and classifies them in one of the three groups defined as:
 
-**`Positive`** — directs individuals to molecular profiling with sequencing to screen for the presence of CH.  
-**`Negative`** — indicates that the individual is highly unlikely to harbor high-risk CH and is unlikely to benefit from screening for CH.  
-**`Equivocal`** — an indeterminant class for whom single-time point CBCs are insufficient to determine the need for CH screening. Follow-up assessments are recommended.
+**`Positive`** — Molecular CH score >4 and incidence of MN.  
+**`Negative`** — Molecular CH score <=4.  
+**`Equivocal`** — Molecular CH score >4 and no incidence of MN.
 
 
 <h3> Python Scipts </h3>
