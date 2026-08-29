@@ -18,21 +18,8 @@ This study used routine blood counts and demographic data from UK Biobank to tra
 
 Run the following scripts in order. Each stage produces outputs required by the next.
 
-### 1. (Optional) Impute missing blood count data
-```bash
-python3 impute_data.py
-```
-- Imputes missing values in the raw blood count data (via KNN (K=5) imputation)
-- Produces the cleaned/imputed dataset used by all downstream steps
-
-**Before running:** update the input/output file paths at the top of the script.
-
-**Output:**
-- `df_imputed.csv` — imputed dataset used as input to Step 2
-
-
-### 2. Prepare input data
-Place `xxx.csv` (either imputed or original dataset) in the project root (or update the path inside the script).
+### 1. Prepare input data
+Place `xxx.csv` (original preprocessed dataset) in the project root (or update the path inside the script).
 The dataset must contain the following columns (or `PDW`, from which `giant_plt` will be derived):
 
 ### 3. Train the baseline model
