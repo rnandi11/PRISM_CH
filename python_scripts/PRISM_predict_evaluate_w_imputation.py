@@ -19,8 +19,8 @@ from prism_imputation import impute_missing_features
 
 # ======================== USER SETTINGS ========================
 MODEL_PATH = "model.pkl"
-DATA_PATH = "HMDR_82626.csv"
-OUTPUT_PATH = "HMDR_with_prism_predictions.csv"
+DATA_PATH = "path/to/input_file.csv"
+OUTPUT_PATH = "output_prism_predictions.csv"
 
 CLASS_LABELS = {
     0: "negative",
