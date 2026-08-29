@@ -226,9 +226,15 @@ def run_pipeline(data, seed=seed, output_path="model_results.txt"):
         'thresholds': thresholds
     }
 
-    with open("baseline_model.pkl", "wb") as f:
+    with open("baseline_custom_threshold.pkl", "wb") as f:
         pickle.dump(model_package, f)
-    print("Model package saved successfully as model.pkl")
+    print("Model package saved successfully as baseline_custom_threshold.pkl")
+
+    # Step 9: Save the classifier only—no thresholds
+    with open("baseline_model.pkl", "wb") as f:
+      pickle.dump(best_model_boruta, f)
+
+    print("Model saved as baseline_model.pkl")
 
 
     return best_model_boruta, selected_features, thresholds
