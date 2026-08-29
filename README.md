@@ -82,7 +82,7 @@ python3 PRISM_predict_evaluate_w_imputation.py
 **Before running:** update the model path (`path/to/model.pkl`) and validation data path (`path/to/data.csv`) at the top of the script.
 
 **Outputs:**
-- `prism_prediction.csv`
+- `output_prism_predictions.csv`
 - `roc_auc.png`
 - `confusion_matrix.png`
 - `classification_report.txt`
