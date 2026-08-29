@@ -33,7 +33,7 @@ SEED = 345
 N_SPLITS = 5
 TARGET_COL = "CH"
 BASELINE_MODEL_PATH = "models/baseline_model.pkl"
-FINAL_MODEL_PATH = "models/final_model.pkl"
+FINAL_MODEL_PATH = "models/PRISM.pkl"
 TRAIN_CSV = "path/to/training/data"
 TEST_CSV = "path/to/test/data.csv"
 
